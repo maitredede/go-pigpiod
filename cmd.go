@@ -86,3 +86,13 @@ func (c Cmd) ExecuteResData(stream io.ReadWriter) (Cmd, error) {
 	}
 	return response, nil
 }
+
+func makeData(items ...any) []byte {
+	buff := &bytes.Buffer{}
+	for _, i := range items {
+		if err := binary.Write(buff, endianess, i); err != nil {
+			panic(err)
+		}
+	}
+	return buff.Bytes()
+}
