@@ -1,5 +1,6 @@
 package pigpiod
 
+// PRRG Get GPIO PWM real range
 func (c *Conn) PRRG(gpio int) (uint32, error) {
 	cmd := Cmd{
 		cmd: 24,
