@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// PWMRaw Set GPIO PWM value
 func (c *Conn) PWMRaw(gpio int, duttyCycle uint32) error {
 	cmd := Cmd{
 		cmd: 5,
@@ -17,6 +18,7 @@ func (c *Conn) PWMRaw(gpio int, duttyCycle uint32) error {
 	return nil
 }
 
+// PWM Set GPIO PWM value
 func (c *Conn) PWM(gpio int, duttyCycle int) error {
 	if duttyCycle < 0 || duttyCycle > 100 {
 		return fmt.Errorf("duttyCycle=%v out of range [0-100]", duttyCycle)

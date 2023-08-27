@@ -1,5 +1,6 @@
 package pigpiod
 
+// GpioMode mode (RW540123)
 type GpioMode uint32
 
 const (

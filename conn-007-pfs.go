@@ -1,9 +1,9 @@
 package pigpiod
 
-// PRS Set GPIO PWM range
-func (c *Conn) PRS(gpio int, value uint32) error {
+// PFS Set GPIO PWM frequency
+func (c *Conn) PFS(gpio int, value uint32) error {
 	cmd := Cmd{
-		cmd: 6,
+		cmd: 7,
 		p1:  uint32(gpio),
 		p2:  value,
 	}

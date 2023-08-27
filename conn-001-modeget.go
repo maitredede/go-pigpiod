@@ -1,5 +1,6 @@
 package pigpiod
 
+// ModeGet Get GPIO mode
 func (c *Conn) ModeGet(gpio int) (GpioMode, error) {
 	cmd := Cmd{
 		cmd: 1,

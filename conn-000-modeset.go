@@ -1,5 +1,6 @@
 package pigpiod
 
+// ModeSet Set GPIO mode
 func (c *Conn) ModeSet(gpio int, mode GpioMode) error {
 	cmd := Cmd{
 		cmd: 0,

@@ -1,5 +1,6 @@
 package pigpiod
 
+// Read Read GPIO level
 func (c *Conn) Read(gpio int) (Level, error) {
 	cmd := Cmd{
 		cmd: 3,

@@ -1,5 +1,6 @@
 package pigpiod
 
+// Write Write GPIO level
 func (c *Conn) Write(gpio int, level Level) error {
 	cmd := Cmd{
 		cmd: 4,
