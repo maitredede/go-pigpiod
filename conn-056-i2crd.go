@@ -6,6 +6,7 @@ func (c *Conn) I2CRD(handle uint32, num uint32) ([]byte, error) {
 	cmd := Cmd{
 		cmd: 56,
 		p1:  handle,
+		p2:  num,
 	}
 	res, err := cmd.ExecuteResData(c.tcp)
 	if err != nil {
