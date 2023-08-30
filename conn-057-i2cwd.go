@@ -15,3 +15,7 @@ func (c *Conn) I2CWD(handle uint32, bvs []byte) error {
 	}
 	return nil
 }
+
+func (c *Conn) I2cWriteDevice(handle uint32, data []byte) error {
+	return c.I2CWD(handle, data)
+}

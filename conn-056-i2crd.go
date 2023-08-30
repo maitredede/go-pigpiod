@@ -13,3 +13,7 @@ func (c *Conn) I2CRD(handle uint32, num uint32) ([]byte, error) {
 	}
 	return res.data[:res.p3], nil
 }
+
+func (c *Conn) I2cReadDevice(handle uint32, length int) ([]byte, error) {
+	return c.I2CRD(handle, uint32(length))
+}
