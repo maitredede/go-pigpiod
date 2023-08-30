@@ -44,23 +44,42 @@ func (c Cmd) ExecuteRes(stream io.ReadWriter) (Cmd, error) {
 
 	var response Cmd
 	if err := binary.Read(stream, endianess, &response.cmd); err != nil {
-		return response, fmt.Errorf("failed to read response: %w", err)
+		return response, fmt.Errorf("failed to read response cmd: %w", err)
 	}
 	if err := binary.Read(stream, endianess, &response.p1); err != nil {
-		return response, fmt.Errorf("failed to read response: %w", err)
+		return response, fmt.Errorf("failed to read response p1: %w", err)
 	}
 	if err := binary.Read(stream, endianess, &response.p2); err != nil {
-		return response, fmt.Errorf("failed to read response: %w", err)
+		return response, fmt.Errorf("failed to read response p2: %w", err)
 	}
-	var res int32
-	if err := binary.Read(stream, endianess, &res); err != nil {
-		return response, fmt.Errorf("failed to read response: %w", err)
+	res, p3, err := readBoth(stream)
+	if err != nil {
+		return response, fmt.Errorf("failed to read response p3: %w", err)
 	}
+	response.p3 = p3
 	if res < 0 {
-		return response, fmt.Errorf("cmd failed: %v", res)
+		if err, ok := pigsErrors[res]; ok {
+			return response, fmt.Errorf("cmd failed: %w", err)
+		} else {
+			return response, fmt.Errorf("cmd failed: %v", res)
+		}
 	}
-	response.p3 = uint32(res)
 	return response, nil
+}
+
+func readBoth(stream io.Reader) (int32, uint32, error) {
+	buff := &bytes.Buffer{}
+	tee := io.TeeReader(stream, buff)
+
+	var iVal int32
+	var uVal uint32
+	if err := binary.Read(tee, endianess, &uVal); err != nil {
+		return iVal, uVal, err
+	}
+	if err := binary.Read(buff, endianess, &iVal); err != nil {
+		return iVal, uVal, err
+	}
+	return iVal, uVal, nil
 }
 
 func (c Cmd) ExecuteResData(stream io.ReadWriter) (Cmd, error) {
@@ -72,13 +91,14 @@ func (c Cmd) ExecuteResData(stream io.ReadWriter) (Cmd, error) {
 		data := make([]byte, response.p3)
 		buf := bytes.Buffer{}
 		remaining := int(response.p3)
+		buf.Grow(remaining)
 		for remaining > 0 {
 			n, err := stream.Read(data)
 			if err != nil {
-				return response, fmt.Errorf("failed to read response: %w", err)
+				return response, fmt.Errorf("failed to read response data: %w", err)
 			}
 			if _, err := buf.Write(data[:n]); err != nil {
-				return response, fmt.Errorf("failed to read response: %w", err)
+				panic(fmt.Errorf("failed to write to read buffer"))
 			}
 			remaining = remaining - n
 		}
